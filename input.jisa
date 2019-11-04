@@ -1,0 +1,7 @@
+   add @t0 @t1 @t2
+   sub @t0 @t1 @t2
+label:
+    sub @b0 @t1 @t0
+    storew 1(@t0) @t0
+    loadi @b0 label
+    BR_EQUAL @b0 @s5 @s6
