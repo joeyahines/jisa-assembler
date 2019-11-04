@@ -83,8 +83,7 @@ def assembly_to_machine_code(file):
 
         machine_code.append(parse_instruction(ins, split_line, labels))
 
-    for line in machine_code:
-        print(line)
+    return machine_code
 
 
 def get_lines_and_labels(input_file):
@@ -140,13 +139,13 @@ def parse_instruction(ins, split_line, labels):
         src2 = parse_register(split_line[3])
         branch_reg = parse_register(split_line[1], use_short=True)
         branch_type = branch_types[ins]
-        return build_instruction((instructions[ins], 4), (branch_reg, 2), (branch_type, 2), (src1, 4), (src2, 4))
+        return build_instruction((instructions[ins], 4), (branch_type, 2), (branch_reg, 2), (src1, 4), (src2, 4))
     elif ins == "jump":
         src1 = parse_register(split_line[2])
         src2 = 0
         branch_reg = 0
         branch_type = branch_types[ins]
-        return build_instruction((instructions[ins], 4), (branch_reg, 2), (branch_type, 2), (src1, 4), (src2, 4))
+        return build_instruction((instructions[ins], 4), (branch_type, 2), ((branch_reg, 2), src1, 4), (src2, 4))
     elif ins == "halt":
         return build_instruction((0, 16))
     else:
@@ -161,9 +160,9 @@ def parse_register(register_handle, use_short=False):
         reg_type = register_handle[1]
         reg_type.lower()
         if reg_type == 't':
-            reg_value = int(register_handle[2])+3
+            reg_value = int(register_handle[2]) + 3
         elif reg_type == 's':
-            reg_value = int(register_handle[2])+9
+            reg_value = int(register_handle[2]) + 9
         elif reg_type == 's':
             reg_value = 1
         elif reg_type == 'r':
@@ -187,10 +186,34 @@ def parse_register(register_handle, use_short=False):
     return reg_value
 
 
+def print_verilog(code):
+    ndx = 0
+    for line in code:
+        print("mem[%s] = 16'b%s;" % (ndx, line))
+        ndx = ndx + 1
+
+    print("mem[%s] = 16'b%s;" % (ndx, 0))
+
+def print_code(code):
+    for line in code:
+        print(line)
+
+
 if __name__ == "__main__":
+    verilog = False
+
     if len(sys.argv) == 1 or sys.argv[1].lower() == "-h":
         print("jisa.py [input file]")
         quit(0)
 
     path = sys.argv[1]
-    assembly_to_machine_code(path)
+
+    if len(sys.argv) > 2 and sys.argv[2] == "-v":
+        verilog = True
+
+    assembly_code = assembly_to_machine_code(path)
+
+    if verilog:
+        print_verilog(assembly_code)
+    else:
+        print_code(assembly_code)
