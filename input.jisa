@@ -1,3 +1,11 @@
-    loadi @t0 5
-    loadi @t1 5
-    add @t2 @t0 @t1
+    loadi @t0 0
+    loadi @t1 15
+    loadi @t3 1
+    loadi @b3 loop
+    loadi @s0 100
+loop:
+    add @t0 @t0 @t3
+    br_less_th @b3 @t0 @t1
+    storew 0(@s0) @t0
+    loadw @t5 0(@s0)
+

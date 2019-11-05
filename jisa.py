@@ -104,21 +104,22 @@ def get_lines_and_labels(input_file):
 def parse_instruction(ins, split_line, labels):
     ins = ins.lower()
 
-    dest = parse_register(split_line[1])
-
     if ins == "add" or ins == "sub" or ins == "or" or ins == "and":
         src1 = parse_register(split_line[2])
         src2 = parse_register(split_line[3])
+        dest = parse_register(split_line[1])
         return build_instruction((instructions[ins], 4), (dest, 4), (src1, 4), (src2, 4))
     elif ins == "loadw":
-        match = re.match(r"(-?\d+)\((.+)\)", split_line[1])
+        match = re.match(r"(-?\d+)\((.+)\)", split_line[2])
+        dest = parse_register(split_line[1])
         if match:
-            src1 = parse_register(match.group(1))
-            offset = int(match.group(2))
+            src1 = parse_register(match.group(2))
+            offset = int(match.group(1))
             return build_instruction((instructions[ins], 4), (dest, 4), (src1, 4), (offset, 4))
         else:
             raise ValueError
     elif ins == "loadi":
+        dest = parse_register(split_line[1])
         if split_line[2].isnumeric():
             imm = int(split_line[2])
         else:
