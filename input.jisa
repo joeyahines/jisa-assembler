@@ -1,11 +1,38 @@
+main:
+    loadi @t0 0
+    loadi @t1 1
+    loadi @b1 alu_type_test
+    br_not_eq @b1 @t0 @t1
+    br_less_th_eq @b1 @t0 @t1
+    loadi @t0 0
+    loadi @t1 1
+    loadi @b1 end
+    br_less_th @b1 @t1 @t0
+    br_great_th_eq @b1 @t0 @t1
+    br_great_th @b1 @t0 @t1
+    loadi @t0 5
+    loadi @t1 5
+    loadi @b1 loop_test
+    br_equal @b1 @t0 @t1
+end:
+    halt
+
+loop_test:
     loadi @t0 0
     loadi @t1 15
     loadi @t3 1
-    loadi @b3 loop
-    loadi @s0 100
-loop:
+    loadi @b1 count
+    add @t4 @r @z
+count:
     add @t0 @t0 @t3
-    br_less_th @b3 @t0 @t1
-    storew 0(@s0) @t0
-    loadw @t5 0(@s0)
+    br_less_th @b1 @t0 @t1
+    add @s0 @z @t0
+    jump @t4
+alu_type_test:
+    loadi @t0 5
+    loadi @t1 2
+    or @s1 @t0 @t1
+    and @s2 @t0 @t1
+    sub @s3 @t1 @t0
+    jump @r
 

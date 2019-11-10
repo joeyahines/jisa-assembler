@@ -13,9 +13,9 @@ instructions = {
     "br_equal": 5,
     "br_not_eq": 13,
     "br_less_th": 5,
-    "br_less_th_or_eq": 13,
+    "br_less_th_eq": 13,
     "br_great_th": 5,
-    "br_great_th_or_eq": 13,
+    "br_great_th_eq": 13,
     "jump": 5,
 }
 
@@ -23,9 +23,9 @@ branch_types = {
     "br_equal": 0,
     "br_not_eq": 0,
     "br_less_th": 1,
-    "br_less_th_or_eq": 1,
+    "br_less_th_eq": 1,
     "br_great_th": 2,
-    "br_great_th_or_eq": 2,
+    "br_great_th_eq": 2,
     "jump": 3,
 }
 
@@ -142,11 +142,11 @@ def parse_instruction(ins, split_line, labels):
         branch_type = branch_types[ins]
         return build_instruction((instructions[ins], 4), (branch_type, 2), (branch_reg, 2), (src1, 4), (src2, 4))
     elif ins == "jump":
-        src1 = parse_register(split_line[2])
+        src1 = parse_register(split_line[1])
         src2 = 0
         branch_reg = 0
         branch_type = branch_types[ins]
-        return build_instruction((instructions[ins], 4), (branch_type, 2), ((branch_reg, 2), src1, 4), (src2, 4))
+        return build_instruction((instructions[ins], 4), (branch_type, 2), (branch_reg, 2), (src1, 4), (src2, 4))
     elif ins == "halt":
         return build_instruction((0, 16))
     else:
